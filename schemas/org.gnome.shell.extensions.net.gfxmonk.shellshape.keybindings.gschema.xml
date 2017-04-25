@@ -12,16 +12,16 @@
 
 		<key type="as" name="rotate-current-window">           <default>["&lt;Mod4&gt;&lt;Shift&gt;j"]</default><summary>Swap with next window</summary><description>Swap with next window.</description></key>
 		<key type="as" name="rotate-current-window-reverse">   <default>["&lt;Mod4&gt;&lt;Shift&gt;k"]</default><summary>Swap with prev window</summary><description>Swap with prev window.</description></key>
-		<key type="as" name="focus-main-window">               <default>["&lt;Mod4&gt;space"]</default><summary>Select main window</summary><description>Select main window.</description></key>
-		<key type="as" name="swap-current-window-with-main">   <default>["&lt;Mod4&gt;&lt;Shift&gt;space"]</default><summary>Swap with main window</summary><description>Swap with main window.</description></key>
+		<key type="as" name="focus-main-window">               <default>[]</default><summary>Select main window</summary><description>Select main window.</description></key>
+		<key type="as" name="swap-current-window-with-main">   <default>[]</default><summary>Swap with main window</summary><description>Swap with main window.</description></key>
 
 		<key type="as" name="set-layout-tiled-vertical">       <default>["&lt;Mod4&gt;v"]</default><summary>Switch workspace to vertical tiled mode</summary><description>Switch workspace to vertical tiled mode.</description></key>
 		<key type="as" name="set-layout-floating">             <default>["&lt;Mod4&gt;f"]</default><summary>Switch workspace to floating mode</summary><description>Switch workspace to floating mode.</description></key>
 		<key type="as" name="set-layout-tiled-horizontal">     <default>["&lt;Mod4&gt;g"]</default><summary>Switch workspace to horizontal tiled mode</summary><description>Switch workspace to horizontal tiled mode.</description></key>
 		<key type="as" name="set-layout-fullscreen">           <default>["&lt;Mod4&gt;&lt;Shift&gt;f"]</default><summary>Switch workspace to full screen mode</summary><description>Switch workspace to full screen mode.</description></key>
 
-		<key type="as" name="next-layout">                     <default>[]</default><summary>Switch workspace to next mode</summary><description>Switch workspace to next mode.</description></key>
-		<key type="as" name="prev-layout">                     <default>[]</default><summary>Switch workspace previous mode</summary><description>Switch workspace to previous mode.</description></key>
+		<key type="as" name="next-layout">                     <default>["&lt;Mod4&gt;space"]</default><summary>Switch workspace to next mode</summary><description>Switch workspace to next mode.</description></key>
+		<key type="as" name="prev-layout">                     <default>["&lt;Mod4&gt;&lt;Shift&gt;space"]</default><summary>Switch workspace previous mode</summary><description>Switch workspace to previous mode.</description></key>
 
 		<key type="as" name="increase-main-split">             <default>["&lt;Mod4&gt;l"]</default><summary>Grow master area</summary><description>Grow master area.</description></key>
 		<key type="as" name="decrease-main-split">             <default>["&lt;Mod4&gt;h"]</default><summary>Shrink master area</summary><description>Shrink master area.</description></key>
@@ -39,9 +39,22 @@
 		<key type="as" name="switch-workspace-down">           <default>["&lt;Mod4&gt;&lt;Alt&gt;j"]</default><summary>Go to workspace below</summary><description>Go to workspace below.</description></key>
 		<key type="as" name="move-window-workspace-up">        <default>["&lt;Mod4&gt;&lt;Alt&gt;&lt;Shift&gt;k"]</default><summary>Move window to workspace above</summary><description>Move window to workspace above.</description></key>
 		<key type="as" name="move-window-workspace-down">      <default>["&lt;Mod4&gt;&lt;Alt&gt;&lt;Shift&gt;j"]</default><summary>Move window to workspace below</summary><description>Move window to workspace below.</description></key>
+		<key type="as" name="set-workspace-1">                 <default>["&lt;Mod4&gt;1"]</default><summary>Switch to workspace 1</summary><description>Switch to workspace with index 1.</description></key>
+		<key type="as" name="set-workspace-2">                 <default>["&lt;Mod4&gt;2"]</default><summary>Switch to workspace 2</summary><description>Switch to workspace with index 2.</description></key>
+		<key type="as" name="set-workspace-3">                 <default>["&lt;Mod4&gt;3"]</default><summary>Switch to workspace 3</summary><description>Switch to workspace with index 3.</description></key>
+		<key type="as" name="set-workspace-4">                 <default>["&lt;Mod4&gt;4"]</default><summary>Switch to workspace 4</summary><description>Switch to workspace with index 4.</description></key>
+		<key type="as" name="set-workspace-5">                 <default>["&lt;Mod4&gt;5"]</default><summary>Switch to workspace 5</summary><description>Switch to workspace with index 5.</description></key>
 
-		<key type="as" name="toggle-maximize">                 <default>["&lt;Mod4&gt;z"]</default><summary>Toggle window maximized state</summary><description>Toggle window maximized state.</description></key>
-		<key type="as" name="minimize-window">                 <default>["&lt;Mod4&gt;x"]</default><summary>Minimize window</summary><description>Minimize window.</description></key>
-		<key type="as" name="unminimize-last-window">          <default>["&lt;Mod4&gt;&lt;Shift&gt;x"]</default><summary>Un-minimize last window</summary><description>Un-minimize last window.</description></key>
+		<key type="as" name="move-window-workspace-1">         <default>["&lt;Mod4&gt;&lt;Ctrl&gt;1"]</default><summary>Move window to workspace 1</summary><description>Move current window to workspace with index 1.</description></key>
+		<key type="as" name="move-window-workspace-2">         <default>["&lt;Mod4&gt;&lt;Ctrl&gt;2"]</default><summary>Move window to workspace 2</summary><description>Move current window to workspace with index 2.</description></key>
+		<key type="as" name="move-window-workspace-3">         <default>["&lt;Mod4&gt;&lt;Ctrl&gt;3"]</default><summary>Move window to workspace 3</summary><description>Move current window to workspace with index 3.</description></key>
+		<key type="as" name="move-window-workspace-4">         <default>["&lt;Mod4&gt;&lt;Ctrl&gt;4"]</default><summary>Move window to workspace 4</summary><description>Move current window to workspace with index 4.</description></key>
+		<key type="as" name="move-window-workspace-5">         <default>["&lt;Mod4&gt;&lt;Ctrl&gt;5"]</default><summary>Move window to workspace 5</summary><description>Move current window to workspace with index 5.</description></key>
+
+		<key type="as" name="toggle-maximize">                 <default>["&lt;Mod4&gt;m"]</default><summary>Toggle window maximized state</summary><description>Toggle window maximized state.</description></key>
+		<key type="as" name="minimize-window">                 <default>["&lt;Mod4&gt;n"]</default><summary>Minimize window</summary><description>Minimize window.</description></key>
+		<key type="as" name="unminimize-last-window">          <default>["&lt;Mod4&gt;&lt;Shift&gt;n"]</default><summary>Un-minimize last window</summary><description>Un-minimize last window.</description></key>
+
+		<key type="as" name="launch-terminal">                 <default>["&lt;Mod4&gt;return"]</default><summary>Launch a terminal</summary><description>Launch a gnome-terminal emulator.</description></key>
 	</schema>
 </schemalist>

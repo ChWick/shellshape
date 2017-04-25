@@ -6,6 +6,7 @@
 *.stamp
 /*-git/
 /gup
+.gup
 /cruft
 /node_modules
 .sources

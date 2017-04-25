@@ -19,6 +19,7 @@ module Extension {
 	var St = imports.gi.St;
 	var Mainloop = imports.mainloop;
 	var Signals = imports.signals;
+    var MiscUtil = imports.misc.util;
 
 	var ExtensionUtils = imports.misc.extensionUtils;
 	var Extension = ExtensionUtils.getCurrentExtension();
@@ -80,6 +81,7 @@ module Extension {
 		private on_all_workspaces:{(cb:WorkspaceCB):void}
 		private current_display:{():any}
 		private current_window:{():MutterWindow.Window}
+		private set_workspace:{(new_index:number, window?:MutterWindow.Window)}
 		private switch_workspace:{(offset:number, window?:MutterWindow.Window)}
 		private _init_overview:{():void}
 		private _init_keybindings:{():void}
@@ -270,12 +272,10 @@ module Extension {
 				return self.get_window(current);
 			};
 
-			// Changes the current workspace by +1 or -1.  If provided with a
+			// Changes the current workspace to new_index.  If provided with a
 			// window, then that window is moved to the destination workspace.
 			// Called directly upon keypress.  Bound in _init_keybindings().
-			self.switch_workspace = function switch_workspace(offset, window) {
-				var activate_index = global.screen.get_active_workspace_index()
-				var new_index = activate_index + offset;
+			self.set_workspace = function set_workspace(new_index, window) {
 				if(new_index < 0 || new_index >= global.screen.get_n_workspaces()) {
 					self.log.debug("No such workspace; ignoring");
 					return;
@@ -288,6 +288,15 @@ module Extension {
 				} else {
 					next_workspace.activate(global.get_current_time());
 				}
+			};
+
+			// Changes the current workspace by +1 or -1.  If provided with a
+			// window, then that window is moved to the destination workspace.
+			// Called directly upon keypress.  Bound in _init_keybindings().
+			self.switch_workspace = function switch_workspace(offset, window) {
+				var activate_index = global.screen.get_active_workspace_index()
+				var new_index = activate_index + offset;
+                self.set_workspace(new_index, window);
 			};
 
 			/* -------------------------------------------------------------
@@ -390,9 +399,24 @@ module Extension {
 				handle('switch-workspace-up',           function() { self.switch_workspace(-1); });
 				handle('move-window-workspace-down',    function() { self.switch_workspace(+1, self.current_window()); });
 				handle('move-window-workspace-up',      function() { self.switch_workspace(-1, self.current_window()); });
+				handle('set-workspace-1',               function() { self.set_workspace(0); });
+				handle('set-workspace-2',               function() { self.set_workspace(1); });
+				handle('set-workspace-3',               function() { self.set_workspace(2); });
+				handle('set-workspace-4',               function() { self.set_workspace(3); });
+				handle('set-workspace-5',               function() { self.set_workspace(4); });
+				handle('move-window-workspace-1',       function() { self.set_workspace(0, self.current_window()); });
+				handle('move-window-workspace-2',       function() { self.set_workspace(1, self.current_window()); });
+				handle('move-window-workspace-3',       function() { self.set_workspace(2, self.current_window()); });
+				handle('move-window-workspace-4',       function() { self.set_workspace(3, self.current_window()); });
+				handle('move-window-workspace-5',       function() { self.set_workspace(4, self.current_window()); });
+
 				handle('toggle-maximize',               function() { self.current_layout().toggle_maximize();});
 				handle('minimize-window',               function() { self.current_layout().minimize_window();});
 				handle('unminimize-last-window',        function() { self.current_layout().unminimize_last_window();});
+
+                // Other
+                handle('launch-terminal',               function() { MiscUtil.spawn(['gnome-terminal']); });
+
 				self.log.debug("Done adding keyboard handlers for Shellshape");
 			};
 
