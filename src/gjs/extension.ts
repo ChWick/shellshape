@@ -68,6 +68,7 @@ module Extension {
 		private update_workspaces:{(WorkspaceUpdateMode)}
 		get_workspace_at:{(idx:number):Workspace.Workspace}
 		private workspaces: Workspace.Workspace[] = []
+		private screens: Screen[]
 		private bounds: Tiling.Bounds = null
 		get_window: {(meta_window:MetaWindow, create_if_necessary?:boolean):MutterWindow.Window}
 		private windows: { [index: string] : MutterWindow.Window; } = {}
@@ -83,6 +84,8 @@ module Extension {
 		private current_window:{():MutterWindow.Window}
 		private set_workspace:{(new_index:number, window?:MutterWindow.Window)}
 		private switch_workspace:{(offset:number, window?:MutterWindow.Window)}
+		private get_current_screen_index:{(meta_window:MetaWindow)}
+		private move_to_screen:{(direction:string):boolean}
 		private _init_overview:{():void}
 		private _init_keybindings:{():void}
 		private _init_workspaces:{():void}
@@ -300,6 +303,118 @@ module Extension {
 			};
 
 			/* -------------------------------------------------------------
+			*           multiscreen / layout changes
+			* ------------------------------------------------------------- */
+            self.get_current_screen_index = function get_current_screen_index(meta_window) {
+				// left edge is sometimes -1px...
+				let pos = meta_window.get_frame_rect();
+				pos.x = pos.x < 0 ? 0 : pos.x;
+
+				let sl = this._screens.length;
+
+				for (let i=0; i < sl; i++) {
+                    let s = this._screens[i];
+
+                    if ((s.x <= pos.x && (s.x + s.totalWidth) > pos.x ) && ((s.y - this._getTopPanelHeight()) <= pos.y && (s.y + s.totalHeight) > pos.y )) {
+                        return i;
+                    }
+				}
+
+				return this._primary;
+            };
+
+            self.move_to_screen = function move_to_screen(direction) {
+				const Meta = imports.gi.Meta;
+
+				let win = global.display.focus_window;
+				if (win == null) {
+				  return false;
+				}
+
+				let screenIndex = this.get_current_screen_index(win);
+
+				let s = null;
+				let old = {
+				  primary: this._screens[screenIndex].primary,
+				  x: this._screens[screenIndex].x,
+				  y: this._screens[screenIndex].y,
+				  totalWidth: this._screens[screenIndex].totalWidth,
+				  totalHeight: this._screens[screenIndex].totalHeight
+				};
+
+				if ((direction == "right" || direction == "e") && screenIndex < (this._screens.length - 1)) {
+				  s = this._screens[screenIndex + 1];
+				  s = this._recalculateSizes(s);
+				}
+
+				if ((direction == "left" || direction == "w") && screenIndex > 0) {
+				  s = this._screens[screenIndex - 1];
+				  s = this._recalculateSizes(s);
+				}
+
+				if (s != null) {
+
+				  let wasMaximizeFlags = 0;
+				  if (win.maximized_horizontally) {
+					wasMaximizeFlags = wasMaximizeFlags | Meta.MaximizeFlags.HORIZONTAL;
+				  }
+
+				  if (win.maximized_vertically) {
+					wasMaximizeFlags = wasMaximizeFlags | Meta.MaximizeFlags.VERTICAL;
+				  }
+
+				  if (wasMaximizeFlags != 0) {
+					win.unmaximize(wasMaximizeFlags);
+				  }
+
+				  let position = win.get_frame_rect();
+
+				  let xRatio = s.totalWidth / old.totalWidth;
+				  let x = s.x + (position.x - old.x) * xRatio;
+				  let width = position.width * xRatio;
+				  if (width >= s.totalWidth) {
+					wasMaximizeFlags = wasMaximizeFlags | Meta.MaximizeFlags.HORIZONTAL;
+				  }
+
+				  let yRatio = s.totalHeight / old.totalHeight;
+
+				  let height = position.height;
+				  // we are moving away from the primary screen and topPanel is visible,
+				  // e.g. height was max but is smaller then the totalHeight because of topPanel height
+				  if (old.primary) {
+					height += this._getTopPanelHeight();
+				  }
+				  height *= yRatio;
+				  if (s.primary) {
+					height -= this._getTopPanelHeight();
+				  }
+
+				  if (height >= s.totalHeight) {
+					wasMaximizeFlags = wasMaximizeFlags | Meta.MaximizeFlags.VERTICAL;
+				  }
+
+				  let y = s.y + (position.y - old.y) * yRatio;
+				  // add/remove the top panel offset to the y position
+				  if (old.primary) {
+					y -= this._getTopPanelHeight();
+				  }
+				  if (s.primary) {
+					y += this._getTopPanelHeight();
+				  }
+				  if (y < 0) {
+					y = 0;
+				  }
+
+				  this._resize(win, x, y, width, height);
+
+				  if (wasMaximizeFlags != 0) {
+					win.maximize(wasMaximizeFlags);
+				  }
+				  return true;
+				}
+				return false;
+			};
+			/* -------------------------------------------------------------
 			*   OVERVIEW ducking, and dealing with changes in workspaces
 			*          and windows from within the overview mode.
 			* ------------------------------------------------------------- */
@@ -413,6 +528,10 @@ module Extension {
 				handle('toggle-maximize',               function() { self.current_layout().toggle_maximize();});
 				handle('minimize-window',               function() { self.current_layout().minimize_window();});
 				handle('unminimize-last-window',        function() { self.current_layout().unminimize_last_window();});
+
+				// Multi Display
+				handle('put-to-left-screen',			function() { self.move_to_screen("left"); });
+				handle('put-to-right-screen',			function() { self.move_to_screen("right"); });
 
                 // Other
                 handle('launch-terminal',               function() { MiscUtil.spawn(['gnome-terminal']); });
